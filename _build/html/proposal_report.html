@@ -225,11 +225,6 @@
    4. Timeline
   </a>
  </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#bibliography">
-   5. Bibliography
-  </a>
- </li>
 </ul>
 
             </nav>
@@ -250,7 +245,7 @@
 <br></div>
 <div class="section" id="introduction">
 <h2>2. Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
-<p>Lipohypertrophy is a common complication for diabetic patients who inject insulin (Kapeluto et al., 2018). It is defined as the growth of fat cells and fibrous tissue with lowered vascularity in the skin following repeated trauma of insulin injection in the same area. Our focus is on subclinical hypertrophy which forms in the subcutaneous layer (the deepest layer of the skin) (Lumen, 2021). It is critical that insulin is not injected into areas of lipohypertrophy as it reduces the effectiveness of the insulin such that patients are unable to manage their blood sugar levels and may require more insulin to achieve the same therapeutic benefits (Kapeluto et al., 2018). Fortunately, research by Kapeluto et al. (2018) has found ultrasound imaging techniques are more accurate in finding these masses than a physical examination of the body by a healthcare professional. But, currently, the criteria to classify lipohypertrophy using ultrasound imaging is only implemented by a small group of physicians (Madden, 2021). To expand the usability of this criteria to a larger set of healthcare professionals, the capstone partner is interested in seeing if we could leverage supervised machine learning techniques to accurately classify the presence of lipohypertrophy given an ultrasound image.</p>
+<p>Lipohypertrophy is a common complication for diabetic patients who inject insulin <span id="id1">[<a class="reference internal" href="references.html#id2"><span>KPCM18</span></a>]</span>. It is defined as the growth of fat cells and fibrous tissue with lowered vascularity in the skin following repeated trauma of insulin injection in the same area. Our focus is on subclinical hypertrophy which forms in the subcutaneous layer (the deepest layer of the skin) <span id="id2">[<a class="reference internal" href="references.html#id7"><span>Bou</span></a>]</span>. It is critical that insulin is not injected into areas of lipohypertrophy as it reduces the effectiveness of the insulin such that patients are unable to manage their blood sugar levels and may require more insulin to achieve the same therapeutic benefits <span id="id3">[<a class="reference internal" href="references.html#id2"><span>KPCM18</span></a>]</span>. Fortunately, research by Kapeluto et al. (2018) <span id="id4">[<a class="reference internal" href="references.html#id2"><span>KPCM18</span></a>]</span> has found ultrasound imaging techniques are more accurate in finding these masses than a physical examination of the body by a healthcare professional. But, currently, the criteria to classify lipohypertrophy using ultrasound imaging is only implemented by a small group of physicians <span id="id5">[<a class="reference internal" href="references.html#id8"><span>Mad</span></a>]</span>. To expand the usability of this criteria to a larger set of healthcare professionals, the capstone partner is interested in seeing if we could leverage supervised machine learning techniques to accurately classify the presence of lipohypertrophy given an ultrasound image.</p>
 <div class="section" id="anticipated-data-product">
 <h3>2.1 Anticipated Data Product<a class="headerlink" href="#anticipated-data-product" title="Permalink to this headline">¶</a></h3>
 <p>Our objective as the data science team is to build a binary classification convolutional neural network (CNN) model that classifies an ultrasound image into two classes, lipohypertrophy present or lipohypertrophy is not present. A CNN model is a common technique used to classify image data into binary categories. A secondary objective of this work is to utilize object detection techniques to classify the location of hypertrophy, if present, on an ultrasound image.</p>
@@ -264,7 +259,8 @@
 </div>
 <div class="section" id="data-science-techniques">
 <h2>3. Data Science Techniques<a class="headerlink" href="#data-science-techniques" title="Permalink to this headline">¶</a></h2>
-<p>A previous study (Kapeluto et al., 2018) classified ultrasound images as containing hypertrophy (“positive”) or not containing lipohypertrophy (“negative”) based on expert knowledge and objectively-developed criteria. These images and mappings will be used to develop the CNN. Efforts were made to crop the images to discard their borders and other annotated information, keeping only the core ultrasound image.</p>
+<p>A previous study <span id="id6">[<a class="reference internal" href="references.html#id2"><span>KPCM18</span></a>]</span> classified ultrasound images as containing hypertrophy (“positive”) or not containing lipohypertrophy (“negative”) based on expert knowledge and objectively-developed criteria. These images and mappings will be used to develop the CNN. Efforts were made to crop the images to discard their borders and other annotated information, keeping only the core ultrasound image.</p>
+<p><em>Code adapted from <span id="id7">[<a class="reference internal" href="references.html#id5"><span>Bar16</span></a>,<a class="reference internal" href="references.html#id6"><span>Sho18</span></a>]</span></em></p>
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">import</span> <span class="n">figure</span><span class="p">,</span> <span class="n">imshow</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">figtext</span>
@@ -272,20 +268,20 @@
 
 <span class="n">files</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Negative&quot;</span><span class="p">:</span> <span class="s1">&#39;lipo_negative.png&#39;</span><span class="p">,</span> <span class="s2">&quot;Positive&quot;</span><span class="p">:</span> <span class="s1">&#39;lipo_positive.png&#39;</span><span class="p">}</span>
 
-<span class="n">fig</span> <span class="o">=</span> <span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">12</span><span class="p">))</span>
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">files</span><span class="o">.</span><span class="n">keys</span><span class="p">())):</span>
     <span class="n">a</span><span class="o">=</span><span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">),</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">a</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
     <span class="n">image</span> <span class="o">=</span> <span class="n">imread</span><span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
     <span class="n">imshow</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
     <span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
-    <span class="n">txt</span><span class="o">=</span><span class="s2">&quot;Figure 1: Some examples of ultrasound images. The lipohypertrophy is characterized with the filled light grey circle on the positive image.&quot;</span>
-    <span class="n">figtext</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.20</span><span class="p">,</span> <span class="n">txt</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+    <span class="n">txt</span><span class="o">=</span><span class="s2">&quot;Figure 1: Some examples of ultrasound images. The lipohypertrophy is characterized with </span><span class="se">\n</span><span class="s2"> the filled light grey circle on the positive image.&quot;</span>
+    <span class="n">figtext</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.20</span><span class="p">,</span> <span class="n">txt</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/proposal_report_11_0.png" src="_images/proposal_report_11_0.png" />
+<img alt="_images/proposal_report_12_0.png" src="_images/proposal_report_12_0.png" />
 </div>
 </div>
 <p>The processed data consists of 263 images, a scarce yet fairly balanced dataset. The counts and proportion of positive and negative observations are shown in the table below.</p>
@@ -313,22 +309,22 @@
 <p>In our preliminary application, the baseline model is trained on the pre-processed data, yielding a validation accuracy score of 82% after 20 epochs (i.e. 20 passes of the entire training dataset). We further explored the baseline model’s performance by examining the feature importances on several observations. Below is an example of a positive observation (i.e. lipohypertrophy present). The highlighted areas are areas that the model believes are significant for deriving the prediction. We can observe that the model is highlighting areas where lipohypertrophy is located.</p>
 <div class="cell tag_hide-input docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
 <span class="n">a</span><span class="o">=</span><span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">image</span> <span class="o">=</span> <span class="n">imread</span><span class="p">(</span><span class="s2">&quot;proposal_feature_importance.PNG&quot;</span><span class="p">)</span>
 <span class="n">imshow</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
 <span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
-<span class="n">txt</span> <span class="o">=</span> <span class="s2">&quot;Figure 2: Feature Importance. The lighter orange and yellow areas on the right represent areas that the baseline model thinks are important for detecting lipohypertrophy.&quot;</span>
-<span class="n">_</span> <span class="o">=</span> <span class="n">figtext</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">,</span> <span class="n">txt</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">txt</span> <span class="o">=</span> <span class="s2">&quot;Figure 2: Feature Importance. The lighter orange and yellow areas on the right represent areas that </span><span class="se">\n</span><span class="s2"> the baseline model thinks are important for detecting lipohypertrophy.&quot;</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">figtext</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">,</span> <span class="n">txt</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/proposal_report_13_0.png" src="_images/proposal_report_13_0.png" />
+<img alt="_images/proposal_report_14_0.png" src="_images/proposal_report_14_0.png" />
 </div>
 </div>
 <p>To evaluate the CNN model’s performance, we will consider both accuracy and recall scores. Recall is a ratio of true positives to false negatives with a higher score reflecting less false negatives which is of interest here. False negatives are critical to avoid from the healthcare providers’ perspective as administering insulin in a region that the model detected did not have lipohypertrophy when in fact there is lipohypertrophy present would be detrimental in managing diabetes.</p>
-<p>Our review of the literature flagged other popular deep learning architectures that have been successful across a wide range of problems. As a second approach, we plan on utilizing the <em>VGG</em> architecture, proposed by Karen Simonyan and Andrew Zisserman in the paper “Very Deep Convolutional Networks for Large-Scale Image Recognition”. The <em>VGG</em> architecture has proven successful in applications with small images and combats the large memory requirement of the <em>densemodels</em> architecture. Our research also demonstrated that a <em>VGG</em> pre-trained  CNN model is slow to train as its learned weights are rather large. Therefore, we plan on exploring <em>Inception</em>, proposed in the paper “Going Deeper with Convolutions” (Szegedy et. al, 2014). We plan on modeling the performance of a variety of tuned CNN architectures against the baseline model to determine the most appropriate architecture.</p>
+<p>Our review of the literature flagged other popular deep learning architectures that have been successful across a wide range of problems. As a second approach, we plan on utilizing the <em>VGG</em> architecture, proposed by Karen Simonyan and Andrew Zisserman in the paper “Very Deep Convolutional Networks for Large-Scale Image Recognition” <span id="id8">[<a class="reference internal" href="references.html#id3"><span>SZ14</span></a>]</span>. The <em>VGG</em> architecture has proven successful in applications with small images and combats the large memory requirement of the <em>densemodels</em> architecture. Our research also demonstrated that a <em>VGG</em> pre-trained  CNN model is slow to train as its learned weights are rather large. Therefore, we plan on exploring <em>Inception</em>, proposed in the paper “Going Deeper with Convolutions” <span id="id9">[<a class="reference internal" href="references.html#id4"><span>SLJ+15</span></a>]</span>. We plan on modeling the performance of a variety of tuned CNN architectures against the baseline model to determine the most appropriate architecture.</p>
 <br></div>
 <div class="section" id="timeline">
 <h2>4. Timeline<a class="headerlink" href="#timeline" title="Permalink to this headline">¶</a></h2>
@@ -339,18 +335,6 @@
 <li><p>In Phase 3 (weeks 6 to 8), we aim to complete our final data product, final report, and final presentation and add additional functionality such as object detection if time permits.</p></li>
 </ol>
 <p><img alt="timeline.png" src="_images/timeline.png" /></p>
-</div>
-<div class="section" id="bibliography">
-<h2>5. Bibliography<a class="headerlink" href="#bibliography" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><p>Barzin, M. (2016, July 14). How to display images in a row with IPython display? Stack Overflow.<a class="reference external" href="https://stackoverflow.com/questions/36006136/how-to-display-images-in-a-row-with-ipython-display">https://stackoverflow.com/questions/36006136/how-to-display-images-in-a-row-with-ipython-display</a>”,</p></li>
-<li><p>Kapeluto, J.E., Paty, B.W., Chang, S.D. &amp; Meneilly, G.S. (2018). Ultrasound detection of insulin-induced lipohypertrophy in Type 1 and Type 2 diabetes. Diabetic Medicine, 35(10), 1383-1390. <a class="reference external" href="https://doi.org/10.1111/dme.13764">https://doi.org/10.1111/dme.13764</a>”,</p></li>
-<li><p>Lumen (2021, May 7). The Skin. Boundless Anatomy and Physiology. <a class="reference external" href="https://courses.lumenlearning.com/boundless-ap/chapter/the-skin/">https://courses.lumenlearning.com/boundless-ap/chapter/the-skin/</a>”,</p></li>
-<li><p>Madden, K. (2021, May 7). Machine Learning Approaches to: 1. Diagnosing Lipohypertrophy at the bedside, and 2. Falls Prediction in Long Term Care. <a class="reference external" href="https://github.ubc.ca/MDS-2020-21/DSCI_591_capstone-proj_students/blob/master/proposals/md/Machine_Learning_Approaches_to_Diagnosing_Lipohypertrophy_and_Predicting_Falls.md">https://github.ubc.ca/MDS-2020-21/DSCI_591_capstone-proj_students/blob/master/proposals/md/Machine_Learning_Approaches_to_Diagnosing_Lipohypertrophy_and_Predicting_Falls.md</a>”,</p></li>
-<li><p>Shoeb, Abu. (2018, July 23). Adding caption below X-axis for a scatter plot using matplotlib. Stack Overflow.<a class="reference external" href="https://stackoverflow.com/questions/34010205/adding-caption-below-x-axis-for-a-scatter-plot-using-matplotlib">https://stackoverflow.com/questions/34010205/adding-caption-below-x-axis-for-a-scatter-plot-using-matplotlib</a>”,</p></li>
-<li><p>Simonyan, K. &amp; Zisserman, A. (2015). Very Deep Convolutional Networks for Large-Scale Image Recognition [Conference session]. ICLR 2015:San Diego. <a class="reference external" href="https://arxiv.org/pdf/1409.1556.pdf">https://arxiv.org/pdf/1409.1556.pdf</a>”,</p></li>
-<li><p>Szegedy, C., Liu, W., Jia, Y., Sermanet, P., Reed, S., Anguelov, D., Dumitru, E., Vanhoucke, V. &amp; Rabinovich, A. (2015). Going deeper with convolutions. IEEE:Conference on Computer Vision and Pattern Recognition (CVPR), Boston. 10.1109/CVPR.2015.7298594”</p></li>
-</ul>
 <br></div>
 </div>
 

@@ -13,7 +13,7 @@
 
 # ## 2. Introduction
 
-# Lipohypertrophy is a common complication for diabetic patients who inject insulin (Kapeluto et al., 2018). It is defined as the growth of fat cells and fibrous tissue with lowered vascularity in the skin following repeated trauma of insulin injection in the same area. Our focus is on subclinical hypertrophy which forms in the subcutaneous layer (the deepest layer of the skin) (Lumen, 2021). It is critical that insulin is not injected into areas of lipohypertrophy as it reduces the effectiveness of the insulin such that patients are unable to manage their blood sugar levels and may require more insulin to achieve the same therapeutic benefits (Kapeluto et al., 2018). Fortunately, research by Kapeluto et al. (2018) has found ultrasound imaging techniques are more accurate in finding these masses than a physical examination of the body by a healthcare professional. But, currently, the criteria to classify lipohypertrophy using ultrasound imaging is only implemented by a small group of physicians (Madden, 2021). To expand the usability of this criteria to a larger set of healthcare professionals, the capstone partner is interested in seeing if we could leverage supervised machine learning techniques to accurately classify the presence of lipohypertrophy given an ultrasound image. 
+# Lipohypertrophy is a common complication for diabetic patients who inject insulin {cite}`kapeluto2018ultrasound`. It is defined as the growth of fat cells and fibrous tissue with lowered vascularity in the skin following repeated trauma of insulin injection in the same area. Our focus is on subclinical hypertrophy which forms in the subcutaneous layer (the deepest layer of the skin) {cite}`boundless`. It is critical that insulin is not injected into areas of lipohypertrophy as it reduces the effectiveness of the insulin such that patients are unable to manage their blood sugar levels and may require more insulin to achieve the same therapeutic benefits {cite}`kapeluto2018ultrasound`. Fortunately, research by Kapeluto et al. (2018) {cite}`kapeluto2018ultrasound` has found ultrasound imaging techniques are more accurate in finding these masses than a physical examination of the body by a healthcare professional. But, currently, the criteria to classify lipohypertrophy using ultrasound imaging is only implemented by a small group of physicians {cite}`madden_2021`. To expand the usability of this criteria to a larger set of healthcare professionals, the capstone partner is interested in seeing if we could leverage supervised machine learning techniques to accurately classify the presence of lipohypertrophy given an ultrasound image. 
 
 # ### 2.1 Anticipated Data Product
 
@@ -32,7 +32,9 @@
 
 # ## 3. Data Science Techniques
 
-# A previous study (Kapeluto et al., 2018) classified ultrasound images as containing hypertrophy ("positive") or not containing lipohypertrophy ("negative") based on expert knowledge and objectively-developed criteria. These images and mappings will be used to develop the CNN. Efforts were made to crop the images to discard their borders and other annotated information, keeping only the core ultrasound image.
+# A previous study {cite}`kapeluto2018ultrasound` classified ultrasound images as containing hypertrophy ("positive") or not containing lipohypertrophy ("negative") based on expert knowledge and objectively-developed criteria. These images and mappings will be used to develop the CNN. Efforts were made to crop the images to discard their borders and other annotated information, keeping only the core ultrasound image.
+
+# *Code adapted from {cite}`barzinm_2016,shoeb3_2018`*
 
 # In[1]:
 
@@ -42,15 +44,15 @@ from matplotlib.image import imread
 
 files = {"Negative": 'lipo_negative.png', "Positive": 'lipo_positive.png'}
 
-fig = figure(figsize=(8, 6), dpi=80)
+fig = figure(figsize=(16, 12))
 for i, key in enumerate(list(files.keys())):
     a=fig.add_subplot(1,len(files),i+1)
     a.set_title(key)
     image = imread(files[key])
     imshow(image)
     axis('off')
-    txt="Figure 1: Some examples of ultrasound images. The lipohypertrophy is characterized with the filled light grey circle on the positive image."
-    figtext(0.5, 0.20, txt, horizontalalignment='center', fontsize=12)
+    txt="Figure 1: Some examples of ultrasound images. The lipohypertrophy is characterized with \n the filled light grey circle on the positive image."
+    figtext(0.5, 0.20, txt, horizontalalignment='center', fontsize=16)
 
 
 # The processed data consists of 263 images, a scarce yet fairly balanced dataset. The counts and proportion of positive and negative observations are shown in the table below. 
@@ -71,18 +73,18 @@ for i, key in enumerate(list(files.keys())):
 # In[2]:
 
 
-fig = figure(figsize=(8, 6), dpi=80)
+fig = figure(figsize=(10, 8))
 a=fig.add_subplot(1,1,1)
 image = imread("proposal_feature_importance.PNG")
 imshow(image)
 axis('off')
-txt = "Figure 2: Feature Importance. The lighter orange and yellow areas on the right represent areas that the baseline model thinks are important for detecting lipohypertrophy."
-_ = figtext(0.5, 0.10, txt, horizontalalignment='center', fontsize=12)
+txt = "Figure 2: Feature Importance. The lighter orange and yellow areas on the right represent areas that \n the baseline model thinks are important for detecting lipohypertrophy."
+_ = figtext(0.5, 0.10, txt, horizontalalignment='center', fontsize=14)
 
 
 # To evaluate the CNN model's performance, we will consider both accuracy and recall scores. Recall is a ratio of true positives to false negatives with a higher score reflecting less false negatives which is of interest here. False negatives are critical to avoid from the healthcare providers’ perspective as administering insulin in a region that the model detected did not have lipohypertrophy when in fact there is lipohypertrophy present would be detrimental in managing diabetes. 
 # 
-# Our review of the literature flagged other popular deep learning architectures that have been successful across a wide range of problems. As a second approach, we plan on utilizing the *VGG* architecture, proposed by Karen Simonyan and Andrew Zisserman in the paper "Very Deep Convolutional Networks for Large-Scale Image Recognition". The *VGG* architecture has proven successful in applications with small images and combats the large memory requirement of the *densemodels* architecture. Our research also demonstrated that a *VGG* pre-trained  CNN model is slow to train as its learned weights are rather large. Therefore, we plan on exploring *Inception*, proposed in the paper "Going Deeper with Convolutions" (Szegedy et. al, 2014). We plan on modeling the performance of a variety of tuned CNN architectures against the baseline model to determine the most appropriate architecture. 
+# Our review of the literature flagged other popular deep learning architectures that have been successful across a wide range of problems. As a second approach, we plan on utilizing the *VGG* architecture, proposed by Karen Simonyan and Andrew Zisserman in the paper "Very Deep Convolutional Networks for Large-Scale Image Recognition" {cite}`simonyan2014very`. The *VGG* architecture has proven successful in applications with small images and combats the large memory requirement of the *densemodels* architecture. Our research also demonstrated that a *VGG* pre-trained  CNN model is slow to train as its learned weights are rather large. Therefore, we plan on exploring *Inception*, proposed in the paper "Going Deeper with Convolutions" {cite}`szegedy2015going`. We plan on modeling the performance of a variety of tuned CNN architectures against the baseline model to determine the most appropriate architecture. 
 
 # <br>
 
@@ -98,15 +100,5 @@ _ = figtext(0.5, 0.10, txt, horizontalalignment='center', fontsize=12)
 # 
 # ![timeline.png](timeline.png)
 # 
-
-# ## 5. Bibliography
-
-# - Barzin, M. (2016, July 14). How to display images in a row with IPython display? Stack Overflow.https://stackoverflow.com/questions/36006136/how-to-display-images-in-a-row-with-ipython-display",
-# - Kapeluto, J.E., Paty, B.W., Chang, S.D. & Meneilly, G.S. (2018). Ultrasound detection of insulin-induced lipohypertrophy in Type 1 and Type 2 diabetes. Diabetic Medicine, 35(10), 1383-1390. https://doi.org/10.1111/dme.13764",
-# - Lumen (2021, May 7). The Skin. Boundless Anatomy and Physiology. https://courses.lumenlearning.com/boundless-ap/chapter/the-skin/",
-# - Madden, K. (2021, May 7). Machine Learning Approaches to: 1. Diagnosing Lipohypertrophy at the bedside, and 2. Falls Prediction in Long Term Care. https://github.ubc.ca/MDS-2020-21/DSCI_591_capstone-proj_students/blob/master/proposals/md/Machine_Learning_Approaches_to_Diagnosing_Lipohypertrophy_and_Predicting_Falls.md",
-# - Shoeb, Abu. (2018, July 23). Adding caption below X-axis for a scatter plot using matplotlib. Stack Overflow.https://stackoverflow.com/questions/34010205/adding-caption-below-x-axis-for-a-scatter-plot-using-matplotlib",
-# - Simonyan, K. & Zisserman, A. (2015). Very Deep Convolutional Networks for Large-Scale Image Recognition [Conference session]. ICLR 2015:San Diego. https://arxiv.org/pdf/1409.1556.pdf",
-# - Szegedy, C., Liu, W., Jia, Y., Sermanet, P., Reed, S., Anguelov, D., Dumitru, E., Vanhoucke, V. & Rabinovich, A. (2015). Going deeper with convolutions. IEEE:Conference on Computer Vision and Pattern Recognition (CVPR), Boston. 10.1109/CVPR.2015.7298594"
 
 # <br>
