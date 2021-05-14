@@ -1,0 +1,62 @@
+Traceback (most recent call last):
+  File "/Users/user/opt/miniconda3/envs/lipoenv/lib/python3.7/site-packages/jupyter_cache/executors/utils.py", line 56, in single_nb_execution
+    record_timing=False,
+  File "/Users/user/opt/miniconda3/envs/lipoenv/lib/python3.7/site-packages/nbclient/client.py", line 1112, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "/Users/user/opt/miniconda3/envs/lipoenv/lib/python3.7/site-packages/nbclient/util.py", line 74, in wrapped
+    return just_run(coro(*args, **kwargs))
+  File "/Users/user/opt/miniconda3/envs/lipoenv/lib/python3.7/site-packages/nbclient/util.py", line 53, in just_run
+    return loop.run_until_complete(coro)
+  File "/Users/user/opt/miniconda3/envs/lipoenv/lib/python3.7/asyncio/base_events.py", line 587, in run_until_complete
+    return future.result()
+  File "/Users/user/opt/miniconda3/envs/lipoenv/lib/python3.7/site-packages/nbclient/client.py", line 554, in async_execute
+    cell, index, execution_count=self.code_cells_executed + 1
+  File "/Users/user/opt/miniconda3/envs/lipoenv/lib/python3.7/site-packages/nbclient/client.py", line 857, in async_execute_cell
+    self._check_raise_for_error(cell, exec_reply)
+  File "/Users/user/opt/miniconda3/envs/lipoenv/lib/python3.7/site-packages/nbclient/client.py", line 760, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+# hide this code cell
+from matplotlib.pyplot import figure, imshow, axis, figtext
+from matplotlib.image import imread
+
+files = {"Negative": '../image/lipo_negative.png', "Positive": '../image/lipo_positive.png'}
+
+fig = figure(figsize=(8, 6), dpi=80)
+for i, key in enumerate(list(files.keys())):
+    a=fig.add_subplot(1,len(files),i+1)
+    a.set_title(key)
+    image = imread(files[key])
+    imshow(image)
+    axis('off')
+    txt="Figure 1: Some examples of ultrasound images. The lipohypertrophy is characterized with the filled light grey circle on the positive image."
+    figtext(0.5, 0.20, txt, horizontalalignment='center', fontsize=12)
+------------------
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mFileNotFoundError[0m                         Traceback (most recent call last)
+[0;32m<ipython-input-1-b296a34762e3>[0m in [0;36m<module>[0;34m[0m
+[1;32m      9[0m     [0ma[0m[0;34m=[0m[0mfig[0m[0;34m.[0m[0madd_subplot[0m[0;34m([0m[0;36m1[0m[0;34m,[0m[0mlen[0m[0;34m([0m[0mfiles[0m[0;34m)[0m[0;34m,[0m[0mi[0m[0;34m+[0m[0;36m1[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[1;32m     10[0m     [0ma[0m[0;34m.[0m[0mset_title[0m[0;34m([0m[0mkey[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0;32m---> 11[0;31m     [0mimage[0m [0;34m=[0m [0mimread[0m[0;34m([0m[0mfiles[0m[0;34m[[0m[0mkey[0m[0;34m][0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m     12[0m     [0mimshow[0m[0;34m([0m[0mimage[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[1;32m     13[0m     [0maxis[0m[0;34m([0m[0;34m'off'[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+
+[0;32m~/opt/miniconda3/envs/lipoenv/lib/python3.7/site-packages/matplotlib/image.py[0m in [0;36mimread[0;34m(fname, format)[0m
+[1;32m   1499[0m                     [0mresponse[0m [0;34m=[0m [0mio[0m[0;34m.[0m[0mBytesIO[0m[0;34m([0m[0mresponse[0m[0;34m.[0m[0mread[0m[0;34m([0m[0;34m)[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[1;32m   1500[0m                 [0;32mreturn[0m [0mimread[0m[0;34m([0m[0mresponse[0m[0;34m,[0m [0mformat[0m[0;34m=[0m[0mext[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0;32m-> 1501[0;31m     [0;32mwith[0m [0mimg_open[0m[0;34m([0m[0mfname[0m[0;34m)[0m [0;32mas[0m [0mimage[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m   1502[0m         return (_pil_png_to_float_array(image)
+[1;32m   1503[0m                 [0;32mif[0m [0misinstance[0m[0;34m([0m[0mimage[0m[0;34m,[0m [0mPIL[0m[0;34m.[0m[0mPngImagePlugin[0m[0;34m.[0m[0mPngImageFile[0m[0;34m)[0m [0;32melse[0m[0;34m[0m[0;34m[0m[0m
+
+[0;32m~/opt/miniconda3/envs/lipoenv/lib/python3.7/site-packages/PIL/ImageFile.py[0m in [0;36m__init__[0;34m(self, fp, filename)[0m
+[1;32m    107[0m         [0;32mif[0m [0misPath[0m[0;34m([0m[0mfp[0m[0;34m)[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+[1;32m    108[0m             [0;31m# filename[0m[0;34m[0m[0;34m[0m[0;34m[0m[0m
+[0;32m--> 109[0;31m             [0mself[0m[0;34m.[0m[0mfp[0m [0;34m=[0m [0mopen[0m[0;34m([0m[0mfp[0m[0;34m,[0m [0;34m"rb"[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[1;32m    110[0m             [0mself[0m[0;34m.[0m[0mfilename[0m [0;34m=[0m [0mfp[0m[0;34m[0m[0;34m[0m[0m
+[1;32m    111[0m             [0mself[0m[0;34m.[0m[0m_exclusive_fp[0m [0;34m=[0m [0;32mTrue[0m[0;34m[0m[0;34m[0m[0m
+
+[0;31mFileNotFoundError[0m: [Errno 2] No such file or directory: '../image/lipo_negative.png'
+FileNotFoundError: [Errno 2] No such file or directory: '../image/lipo_negative.png'
+
